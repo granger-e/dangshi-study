@@ -389,6 +389,7 @@ let state = {
 };
 
 function setView(view) {
+  if (state.view === 'test' && view !== 'test') stopTimerUpdate();
   state.view = view;
   state.questions = [];
   state.currentIndex = 0;
@@ -396,6 +397,7 @@ function setView(view) {
   state.answered = false;
   state.isCorrect = false;
   state.testResults = null;
+  if (view !== 'test') showNavTimer(false);
   render();
 }
 
@@ -437,18 +439,20 @@ function renderNav() {
   const nav = h('nav');
   const back = h('button', { className: 'back' + (state.view !== 'menu' ? ' show' : ''), onClick: () => goBack() }, '←');
   const title = h('div', { className: 'title' }, h('span', { className: 'icon' }, '🏛️ '), '党史学习');
+  const timer = h('span', { id: 'nav-timer', style: 'font-size:15px;font-weight:700;color:var(--primary);margin-right:4px;display:none' });
   const settings = h('button', { className: 'settings-btn', onClick: () => showSettings() }, '⚙️');
-  nav.append(back, title, settings);
+  nav.append(back, title, timer, settings);
   return nav;
 }
 
 function goBack() {
   if (state.view === 'menu') return;
   if (state.view === 'testConfig') { setView('menu'); return; }
-  if (state.view === 'test' && state.testResults) { setView('menu'); return; }
+  if (state.view === 'test' && state.testResults) { stopTimerUpdate(); setView('menu'); return; }
+  if (state.view === 'test') { stopTimerUpdate(); setView('menu'); return; }
   if (state.view === 'stats') { setView('menu'); return; }
   // If in the middle of a quiz, confirm
-  if ((state.view === 'daily' || state.view === 'review' || state.view === 'test') && state.answered && state.currentIndex > 0) {
+  if ((state.view === 'daily' || state.view === 'review') && state.answered && state.currentIndex > 0) {
     setView('menu');
     return;
   }
@@ -536,12 +540,6 @@ function renderQuiz(app, isTest = false) {
 
   const progressText = h('div', { className: 'progress-text' }, progressLabel);
 
-  // Timer for test mode
-  let timerEl = null;
-  if (isTest && state.testStartTime) {
-    timerEl = h('div', { className: 'timer', id: 'test-timer' });
-  }
-
   // Type tag
   const tag = h('span', { className: `q-type-tag ${isMulti ? 'multi' : 'single'}` },
     isMulti ? '多选题' : '单选题'
@@ -622,7 +620,7 @@ function renderQuiz(app, isTest = false) {
     actions.append(nextBtn);
   }
 
-  main.append(progressBar, progressText, timerEl, tag, qNum, qText, optionsDiv, multiHint, actions);
+  main.append(progressBar, progressText, tag, qNum, qText, optionsDiv, multiHint, actions);
   app.append(main);
 
   // Start timer update for test mode
@@ -632,16 +630,33 @@ function renderQuiz(app, isTest = false) {
 }
 
 let timerInterval = null;
+
+function showNavTimer(show) {
+  const el = document.getElementById('nav-timer');
+  if (el) el.style.display = show ? '' : 'none';
+}
+
 function startTimerUpdate() {
   if (timerInterval) clearInterval(timerInterval);
+  showNavTimer(true);
   timerInterval = setInterval(() => {
-    const el = document.getElementById('test-timer');
+    const el = document.getElementById('nav-timer');
     if (!el) { clearInterval(timerInterval); return; }
+    if (!state.testStartTime || state.testResults) {
+      el.style.display = 'none';
+      clearInterval(timerInterval);
+      return;
+    }
     const elapsed = Math.floor((Date.now() - state.testStartTime) / 1000);
     const mins = Math.floor(elapsed / 60);
     const secs = elapsed % 60;
     el.textContent = `⏱ ${mins}:${secs.toString().padStart(2,'0')}`;
   }, 1000);
+}
+
+function stopTimerUpdate() {
+  if (timerInterval) clearInterval(timerInterval);
+  showNavTimer(false);
 }
 
 function onOptionClick(key, isMulti) {
@@ -822,7 +837,7 @@ function startTest(count, types) {
 }
 
 function finishTest() {
-  if (timerInterval) clearInterval(timerInterval);
+  stopTimerUpdate();
   const totalTime = Math.floor((Date.now() - state.testStartTime) / 1000);
   const questions = state.questions;
   const history = getHistory();
