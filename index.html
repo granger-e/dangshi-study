@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#c41e3a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="党史学习">
+<title>党史知识竞赛学习</title>
+<style>
+:root {
+  --bg: #f5f0eb;
+  --card: #ffffff;
+  --text: #2c1810;
+  --text2: #6b5e56;
+  --primary: #c41e3a;
+  --primary2: #a01830;
+  --green: #2d8a4e;
+  --green2: #e8f5e9;
+  --red: #c62828;
+  --red2: #ffebee;
+  --gold: #d4a017;
+  --gold2: #fff8e1;
+  --border: #e0d5c7;
+  --shadow: 0 2px 12px rgba(44,24,16,0.08);
+  --radius: 16px;
+  --nav-h: 56px;
+  --safe-b: env(safe-area-inset-bottom, 16px);
+}
+[data-theme="dark"] {
+  --bg: #1a1410;
+  --card: #2a2218;
+  --text: #e8d5c4;
+  --text2: #a09080;
+  --primary: #e63946;
+  --primary2: #c41e3a;
+  --green: #4caf50;
+  --green2: #1b3a1b;
+  --red: #ef5350;
+  --red2: #3a1b1b;
+  --gold: #ffc107;
+  --gold2: #3a3010;
+  --border: #3a3028;
+  --shadow: 0 2px 12px rgba(0,0,0,0.3);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{height:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  background:var(--bg);color:var(--text);min-height:100vh;min-height:100dvh;
+  display:flex;justify-content:center;line-height:1.6;
+  -webkit-tap-highlight-color:transparent;
+  -webkit-user-select:none;user-select:none;
+}
+#app{width:100%;max-width:480px;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;position:relative}
+/* Nav */
+nav{
+  height:var(--nav-h);display:flex;align-items:center;padding:0 16px;
+  background:var(--card);border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:10;gap:12px;
+}
+nav .back{width:32px;height:32px;border:none;background:none;color:var(--text);font-size:20px;cursor:pointer;display:none;border-radius:8px}
+nav .back.show{display:flex;align-items:center;justify-content:center}
+nav .title{font-size:18px;font-weight:700;flex:1}
+nav .title .icon{color:var(--primary)}
+nav .settings-btn{width:36px;height:36px;border:none;background:none;color:var(--text2);font-size:20px;cursor:pointer;border-radius:50%}
+nav .settings-btn:active{background:var(--border)}
+/* Main content */
+main{flex:1;padding:16px;padding-bottom:calc(16px + var(--safe-b));overflow-y:auto}
+/* Cards */
+.card{background:var(--card);border-radius:var(--radius);padding:20px;margin-bottom:16px;box-shadow:var(--shadow);border:1px solid var(--border)}
+.card-row{display:flex;gap:12px;flex-wrap:wrap}
+.card-row .card{flex:1;min-width:140px;cursor:pointer;transition:transform .15s,box-shadow .15s;text-align:center;padding:24px 16px}
+.card-row .card:active{transform:scale(.97);box-shadow:0 1px 6px rgba(0,0,0,.1)}
+.card-row .card .card-icon{font-size:36px;margin-bottom:8px}
+.card-row .card .card-label{font-size:15px;font-weight:600;color:var(--text)}
+.card-row .card .card-sub{font-size:12px;color:var(--text2);margin-top:4px}
+.badge{
+  display:inline-block;background:var(--red);color:#fff;font-size:11px;padding:2px 8px;
+  border-radius:10px;font-weight:700;min-width:20px;text-align:center;
+}
+/* Progress ring */
+.progress-ring{text-align:center;padding:20px 0}
+.progress-ring .ring-val{font-size:48px;font-weight:800;color:var(--primary)}
+.progress-ring .ring-label{font-size:14px;color:var(--text2);margin-top:4px}
+/* Progress bar */
+.progress-bar{height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin:12px 0}
+.progress-bar .fill{height:100%;background:var(--primary);border-radius:4px;transition:width .4s ease}
+.progress-text{font-size:13px;color:var(--text2);text-align:center}
+/* Question card */
+.q-type-tag{
+  display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600;
+  margin-bottom:12px;
+}
+.q-type-tag.single{background:var(--gold2);color:var(--gold)}
+.q-type-tag.multi{background:#e3f2fd;color:#1565c0}
+.q-num{font-size:13px;color:var(--text2);margin-bottom:8px}
+.q-text{font-size:17px;line-height:1.8;margin-bottom:20px;text-align:justify}
+/* Option buttons */
+.options{display:flex;flex-direction:column;gap:10px}
+.opt-btn{
+  display:flex;align-items:center;gap:12px;padding:14px 16px;
+  border:2px solid var(--border);border-radius:12px;
+  background:var(--card);font-size:16px;cursor:pointer;
+  transition:all .2s;text-align:left;min-height:48px;
+  color:var(--text);
+}
+.opt-btn:active{transform:scale(.98)}
+.opt-btn.selected{border-color:var(--primary);background:#fff5f5}
+.opt-btn.correct{border-color:var(--green);background:var(--green2);animation:pulse .4s}
+.opt-btn.wrong{border-color:var(--red);background:var(--red2);animation:shake .4s}
+.opt-btn.show-correct{border-color:var(--green);background:var(--green2)}
+.opt-btn .opt-letter{
+  width:32px;height:32px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-weight:700;font-size:14px;
+  background:var(--bg);color:var(--text2);flex-shrink:0;
+}
+.opt-btn.selected .opt-letter{background:var(--primary);color:#fff}
+.opt-btn.correct .opt-letter{background:var(--green);color:#fff}
+.opt-btn.wrong .opt-letter{background:var(--red);color:#fff}
+.opt-btn.show-correct .opt-letter{background:var(--green);color:#fff}
+.opt-btn .opt-text{flex:1}
+.opt-btn .opt-icon{font-size:20px;display:none}
+.opt-btn.correct .opt-icon.correct-icon{display:block}
+.opt-btn.wrong .opt-icon.wrong-icon{display:block}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+/* Bottom actions */
+.bottom-actions{padding:16px 0;display:flex;gap:12px;justify-content:center}
+.btn{
+  padding:12px 28px;border-radius:25px;font-size:16px;font-weight:600;
+  border:none;cursor:pointer;transition:all .2s;min-height:48px;
+  display:flex;align-items:center;gap:8px;
+}
+.btn:active{transform:scale(.96)}
+.btn-primary{background:var(--primary);color:#fff;box-shadow:0 4px 12px rgba(196,30,58,.3)}
+.btn-primary:disabled{opacity:.5;pointer-events:none}
+.btn-outline{background:transparent;border:2px solid var(--primary);color:var(--primary)}
+.btn-secondary{background:var(--border);color:var(--text)}
+.btn-small{padding:8px 16px;font-size:14px;min-height:36px}
+/* Modal */
+.modal-overlay{
+  position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);
+  z-index:100;display:flex;align-items:flex-end;justify-content:center;
+}
+.modal{
+  background:var(--card);border-radius:20px 20px 0 0;padding:24px 20px;
+  width:100%;max-width:480px;max-height:80vh;overflow-y:auto;
+  padding-bottom:calc(24px + var(--safe-b));
+}
+.modal h3{font-size:18px;margin-bottom:16px;text-align:center}
+.modal .close{
+  width:32px;height:4px;background:var(--border);border-radius:2px;
+  margin:0 auto 16px;
+}
+/* Settings */
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
+.setting-row .slabel{font-size:15px}
+.setting-row .sval{font-size:14px;color:var(--text2)}
+input[type=range]{width:120px}
+.toggle{width:52px;height:30px;background:var(--border);border-radius:15px;position:relative;cursor:pointer;transition:background .3s}
+.toggle.on{background:var(--primary)}
+.toggle::after{
+  content:'';position:absolute;top:3px;left:3px;width:24px;height:24px;
+  background:#fff;border-radius:50%;transition:transform .3s;
+}
+.toggle.on::after{transform:translateX(22px)}
+/* Test config */
+.test-config{text-align:center}
+.test-config .count-slider{margin:20px 0}
+.test-config .count-num{font-size:48px;font-weight:800;color:var(--primary)}
+.test-config .type-checks{display:flex;gap:16px;justify-content:center;margin:16px 0}
+.test-config .type-check{display:flex;align-items:center;gap:6px;cursor:pointer}
+/* Timer */
+.timer{text-align:center;font-size:28px;font-weight:800;color:var(--primary);font-variant-numeric:tabular-nums}
+/* Results */
+.result{text-align:center;padding:20px 0}
+.result .score{font-size:64px;font-weight:800;color:var(--primary)}
+.result .score.perfect{color:var(--green)}
+.result .stat-row{display:flex;justify-content:center;gap:32px;margin:16px 0}
+.result .stat-item{text-align:center}
+.result .stat-val{font-size:24px;font-weight:700}
+.result .stat-label{font-size:12px;color:var(--text2)}
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stat-card{background:var(--card);border-radius:var(--radius);padding:16px;text-align:center;box-shadow:var(--shadow);border:1px solid var(--border)}
+.stat-card .sv{font-size:28px;font-weight:800;color:var(--primary)}
+.stat-card .sl{font-size:13px;color:var(--text2)}
+/* Chart */
+.chart{display:flex;align-items:flex-end;gap:8px;height:120px;justify-content:center;padding:16px 0}
+.chart-bar{width:32px;background:var(--primary);border-radius:6px 6px 0 0;transition:height .5s ease;position:relative}
+.chart-bar .clabel{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--text2)}
+.chart-bar .cval{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--text2)}
+/* Empty state */
+.empty{text-align:center;padding:40px 20px;color:var(--text2)}
+.empty .empty-icon{font-size:48px;margin-bottom:12px}
+.empty p{font-size:15px}
+/* Toast */
+.toast{
+  position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:200;
+  background:var(--text);color:var(--bg);padding:10px 24px;border-radius:20px;
+  font-size:14px;font-weight:600;animation:toastIn .3s;
+}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(-10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+/* Celebration overlay */
+.celebration{position:fixed;top:0;left:0;right:0;bottom:0;z-index:150;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.celebration .msg{
+  background:var(--card);padding:32px;border-radius:20px;text-align:center;
+  box-shadow:0 8px 32px rgba(0,0,0,.2);animation:popIn .5s;
+}
+.celebration .msg .emoji{font-size:64px}
+.celebration .msg h2{font-size:24px;margin:8px 0}
+.celebration .msg button{margin-top:16px;pointer-events:all}
+@keyframes popIn{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+/* Install banner */
+.install-banner{
+  background:var(--primary);color:#fff;padding:10px 16px;
+  display:none;align-items:center;justify-content:space-between;
+  font-size:14px;
+}
+.install-banner.show{display:flex}
+.install-banner button{
+  background:#fff;color:var(--primary);border:none;
+  padding:6px 16px;border-radius:15px;font-weight:600;font-size:13px;cursor:pointer;
+}
+/* Checkbox for multi-select */
+.opt-check{width:22px;height:22px;border:2px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.opt-btn.selected .opt-check{border-color:var(--primary);background:var(--primary)}
+.opt-btn.selected .opt-check::after{content:'✓';color:#fff;font-size:14px;font-weight:700}
+.opt-btn.correct .opt-check{border-color:var(--green);background:var(--green)}
+.opt-btn.correct .opt-check::after{content:'✓';color:#fff;font-size:14px;font-weight:700}
+.opt-btn.wrong .opt-check{border-color:var(--red);background:var(--red)}
+.opt-btn.wrong .opt-check::after{content:'✗';color:#fff;font-size:14px;font-weight:700}
+/* Multi confirm */
+.multi-hint{font-size:13px;color:var(--text2);text-align:center;margin:8px 0}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+// ====== DATA LOADING ======
+let QUESTION_BANK = { singleChoice: [], multipleChoice: [] };
+
+async function loadQuestions() {
+  try {
+    const resp = await fetch('./questions.json');
+    QUESTION_BANK = await resp.json();
+    console.log(`Loaded: ${QUESTION_BANK.singleChoice.length} single + ${QUESTION_BANK.multipleChoice.length} multi`);
+  } catch (e) {
+    console.error('Failed to load questions:', e);
+    document.getElementById('app').innerHTML = '<div style="text-align:center;padding:60px 20px"><h2>⚠️ 加载题库失败</h2><p style="color:var(--text2)">请确保 questions.json 与 index.html 在同一目录下</p></div>';
+  }
+}
+
+// ====== STORAGE ======
+const LS = {
+  get(key, def) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : def; } catch { return def; } },
+  set(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+};
+
+function getSettings() { return LS.get('phs', { dailyGoal: 20, questionTypes: ['single','multiple'], theme: 'light' }); }
+function saveSettings(s) { LS.set('phs', s); }
+function getDaily() {
+  const d = LS.get('phd', { date: '', completed: 0, correct: 0, answeredIds: [] });
+  const today = new Date().toISOString().slice(0,10);
+  if (d.date !== today) return { date: today, completed: 0, correct: 0, answeredIds: [] };
+  return d;
+}
+function saveDaily(d) { LS.set('phd', d); }
+function getHistory() { return LS.get('phh', {}); }
+function saveHistory(h) { LS.set('phh', h); }
+function getWrongQueue() { return LS.get('phwq', { items: {} }); }
+function saveWrongQueue(q) { LS.set('phwq', q); }
+
+// ====== HELPERS ======
+function qKey(q) { return `${q.type}-${q.id}`; }
+function shuffle(arr) { const a = [...arr]; for (let i = a.length-1; i>0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; }
+
+function getTodayStr() { return new Date().toISOString().slice(0,10); }
+function addDays(d, n) { const dt = new Date(d); dt.setDate(dt.getDate()+n); return dt.toISOString().slice(0,10); }
+
+// ====== SPACED REPETITION ======
+function updateWrongQueue(q, isCorrect) {
+  const wq = getWrongQueue();
+  const key = qKey(q);
+  const today = getTodayStr();
+
+  if (!isCorrect) {
+    // Wrong answer: reset interval
+    wq.items[key] = { added: today, interval: 1, consecutiveCorrect: 0, nextReview: addDays(today, 1) };
+  } else {
+    const item = wq.items[key];
+    if (item) {
+      item.consecutiveCorrect += 1;
+      item.interval *= 2;
+      item.nextReview = addDays(today, item.interval);
+      // Remove if mastered (3 consecutive correct with interval >= 8 days)
+      if (item.consecutiveCorrect >= 3 && item.interval >= 8) {
+        delete wq.items[key];
+      }
+    }
+  }
+  saveWrongQueue(wq);
+}
+
+function getDueReviews() {
+  const wq = getWrongQueue();
+  const today = getTodayStr();
+  return Object.entries(wq.items)
+    .filter(([,v]) => v.nextReview <= today)
+    .map(([k]) => k);
+}
+
+function getReviewCount() {
+  return getDueReviews().length;
+}
+
+// ====== QUESTION SELECTION ======
+function getAllQuestions(types) {
+  let all = [];
+  if (types.includes('single')) all = all.concat(QUESTION_BANK.singleChoice);
+  if (types.includes('multiple')) all = all.concat(QUESTION_BANK.multipleChoice);
+  return all;
+}
+
+function selectDailyQuestions(count, types) {
+  const history = getHistory();
+  const dueReviews = getDueReviews();
+  const allQs = getAllQuestions(types);
+  const qMap = {};
+  allQs.forEach(q => { qMap[qKey(q)] = q; });
+
+  let selected = [];
+  const selectedKeys = new Set();
+
+  // Priority 1: Due reviews
+  for (const key of dueReviews) {
+    if (selected.length >= count) break;
+    if (qMap[key]) { selected.push(qMap[key]); selectedKeys.add(key); }
+  }
+
+  // Priority 2: Never-answered questions
+  const neverAnswered = allQs.filter(q => !history[qKey(q)] && !selectedKeys.has(qKey(q)));
+  const shuffledNew = shuffle(neverAnswered);
+  for (const q of shuffledNew) {
+    if (selected.length >= count) break;
+    selected.push(q);
+    selectedKeys.add(qKey(q));
+  }
+
+  // Priority 3: Previously wrong
+  const wrong = allQs.filter(q => {
+    const k = qKey(q);
+    return history[k] && !history[k].correct && !selectedKeys.has(k);
+  });
+  const shuffledWrong = shuffle(wrong);
+  for (const q of shuffledWrong) {
+    if (selected.length >= count) break;
+    selected.push(q);
+    selectedKeys.add(qKey(q));
+  }
+
+  // Priority 4: Any remaining
+  const remaining = allQs.filter(q => !selectedKeys.has(qKey(q)));
+  const shuffledRem = shuffle(remaining);
+  for (const q of shuffledRem) {
+    if (selected.length >= count) break;
+    selected.push(q);
+  }
+
+  return selected;
+}
+
+// ====== APP STATE ======
+let state = {
+  view: 'menu',     // menu | daily | review | test | testConfig | stats
+  questions: [],
+  currentIndex: 0,
+  selectedOpts: [], // for multi-choice
+  answered: false,
+  isCorrect: false,
+  testStartTime: 0,
+  testResults: null,
+  settings: getSettings(),
+  daily: getDaily(),
+};
+
+function setView(view) {
+  state.view = view;
+  state.questions = [];
+  state.currentIndex = 0;
+  state.selectedOpts = [];
+  state.answered = false;
+  state.isCorrect = false;
+  state.testResults = null;
+  render();
+}
+
+// ====== RENDER ======
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => document.querySelectorAll(sel);
+
+function h(tag, attrs, ...children) {
+  const el = document.createElement(tag);
+  if (attrs) Object.entries(attrs).forEach(([k,v]) => {
+    if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2), v);
+    else if (k === 'className') el.className = v;
+    else el.setAttribute(k, v);
+  });
+  children.forEach(c => { if (c != null) el.append(typeof c === 'string' ? document.createTextNode(c) : c); });
+  return el;
+}
+
+function render() {
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+  app.append(renderNav());
+
+  if (state.view === 'menu') renderMenu(app);
+  else if (state.view === 'daily' || state.view === 'review') renderQuiz(app);
+  else if (state.view === 'test') renderQuiz(app, true);
+  else if (state.view === 'testConfig') renderTestConfig(app);
+  else if (state.view === 'stats') renderStats(app);
+
+  applyTheme();
+}
+
+function renderNav() {
+  const nav = h('nav');
+  const back = h('button', { className: 'back' + (state.view !== 'menu' ? ' show' : ''), onClick: () => goBack() }, '←');
+  const title = h('div', { className: 'title' }, h('span', { className: 'icon' }, '🏛️ '), '党史学习');
+  const settings = h('button', { className: 'settings-btn', onClick: () => showSettings() }, '⚙️');
+  nav.append(back, title, settings);
+  return nav;
+}
+
+function goBack() {
+  if (state.view === 'menu') return;
+  if (state.view === 'testConfig') { setView('menu'); return; }
+  if (state.view === 'test' && state.testResults) { setView('menu'); return; }
+  if (state.view === 'stats') { setView('menu'); return; }
+  // If in the middle of a quiz, confirm
+  if ((state.view === 'daily' || state.view === 'review' || state.view === 'test') && state.answered && state.currentIndex > 0) {
+    setView('menu');
+    return;
+  }
+  if (state.view === 'daily' && state.currentIndex > 0 && !state.answered) {
+    if (confirm('确定要退出吗？当前学习进度将保留。')) setView('menu');
+    return;
+  }
+  setView('menu');
+}
+
+function renderMenu(app) {
+  const main = h('main');
+  const settings = state.settings;
+
+  // Daily progress ring
+  const daily = getDaily();
+  const doneToday = daily.completed;
+  const goal = settings.dailyGoal;
+  const pct = Math.min(100, Math.round(doneToday / goal * 100));
+
+  const ring = h('div', { className: 'progress-ring' },
+    h('div', { className: 'ring-val' }, `${doneToday}/${goal}`),
+    h('div', { className: 'ring-label' }, `今日已完成 ${pct}%`)
+  );
+
+  // Review count
+  const reviewN = getReviewCount();
+
+  // Cards
+  const cards = h('div', { className: 'card-row' },
+    h('div', { className: 'card', onClick: () => startDaily() },
+      h('div', { className: 'card-icon' }, '📝'),
+      h('div', { className: 'card-label' }, '每日学习'),
+      h('div', { className: 'card-sub' }, `今日 ${doneToday}/${goal}`)
+    ),
+    h('div', { className: 'card', onClick: () => startReview() },
+      h('div', { className: 'card-icon' }, '🔄'),
+      h('div', { className: 'card-label' }, '错题复习'),
+      h('div', { className: 'card-sub' }, reviewN > 0 ? `${reviewN} 题待复习` : '暂无待复习')
+    )
+  );
+
+  const cards2 = h('div', { className: 'card-row' },
+    h('div', { className: 'card', onClick: () => setView('testConfig') },
+      h('div', { className: 'card-icon' }, '🎲'),
+      h('div', { className: 'card-label' }, '随机测试'),
+      h('div', { className: 'card-sub' }, '检验学习成果')
+    ),
+    h('div', { className: 'card', onClick: () => setView('stats') },
+      h('div', { className: 'card-icon' }, '📊'),
+      h('div', { className: 'card-label' }, '学习统计'),
+      h('div', { className: 'card-sub' }, '查看学习记录')
+    )
+  );
+
+  main.append(ring, cards, cards2);
+  app.append(main);
+}
+
+// ====== QUIZ (daily / review / test) ======
+function renderQuiz(app, isTest = false) {
+  const main = h('main');
+  const questions = state.questions;
+  const idx = state.currentIndex;
+
+  if (idx >= questions.length) {
+    renderQuizComplete(main, isTest);
+    app.append(main);
+    return;
+  }
+
+  const q = questions[idx];
+  const isMulti = q.type === 'multiple';
+
+  // Progress bar
+  const done = idx;
+  const total = questions.length;
+  const barPct = Math.round(done / total * 100);
+
+  const progressBar = h('div', { className: 'progress-bar' },
+    h('div', { className: 'fill', style: `width:${barPct}%` })
+  );
+
+  let progressLabel = `${done}/${total}`;
+  if (isTest && state.testStartTime) {
+    const elapsed = Math.floor((Date.now() - state.testStartTime) / 1000);
+    const mins = Math.floor(elapsed / 60);
+    const secs = elapsed % 60;
+    progressLabel += ` · ⏱ ${mins}:${secs.toString().padStart(2,'0')}`;
+  }
+
+  const progressText = h('div', { className: 'progress-text' }, progressLabel);
+
+  // Timer for test mode
+  let timerEl = null;
+  if (isTest && state.testStartTime) {
+    timerEl = h('div', { className: 'timer', id: 'test-timer' });
+  }
+
+  // Type tag
+  const tag = h('span', { className: `q-type-tag ${isMulti ? 'multi' : 'single'}` },
+    isMulti ? '多选题' : '单选题'
+  );
+
+  // Question number
+  const qNum = h('div', { className: 'q-num' }, `第 ${idx + 1} 题`);
+
+  // Question text
+  const qText = h('div', { className: 'q-text' }, q.question);
+
+  // Options
+  const optionsDiv = h('div', { className: 'options' });
+  const optKeys = Object.keys(q.options).sort();
+
+  optKeys.forEach(key => {
+    const optText = q.options[key];
+    const isSelected = state.selectedOpts.includes(key);
+
+    let btnClass = 'opt-btn';
+    if (state.answered) {
+      const correctAnswers = q.answer.split('');
+      if (correctAnswers.includes(key)) {
+        btnClass += ' show-correct';
+      } else if (isSelected && !state.isCorrect) {
+        btnClass += ' wrong';
+      }
+      if (isSelected && state.isCorrect && correctAnswers.includes(key)) {
+        btnClass += ' correct';
+      }
+    } else if (isSelected) {
+      btnClass += ' selected';
+    }
+
+    const btn = h('div', { className: btnClass, onClick: () => onOptionClick(key, isMulti) });
+
+    if (isMulti) {
+      const check = h('div', { className: 'opt-check' });
+      btn.append(check);
+    } else {
+      const letter = h('div', { className: 'opt-letter' }, key);
+      btn.append(letter);
+    }
+
+    btn.append(h('div', { className: 'opt-text' }, optText));
+
+    // Icons
+    const correctIcon = h('span', { className: 'opt-icon correct-icon' }, '✓');
+    const wrongIcon = h('span', { className: 'opt-icon wrong-icon' }, '✗');
+    btn.append(correctIcon, wrongIcon);
+
+    optionsDiv.append(btn);
+  });
+
+  // Multi-select hint
+  let multiHint = null;
+  if (isMulti && !state.answered) {
+    multiHint = h('div', { className: 'multi-hint' }, '点击选项进行多选，选择完成后点击下方按钮确认');
+  }
+
+  // Bottom actions
+  const actions = h('div', { className: 'bottom-actions' });
+
+  if (!state.answered) {
+    if (isMulti) {
+      const confirmBtn = h('button', {
+        className: 'btn btn-primary',
+        disabled: state.selectedOpts.length === 0 ? 'disabled' : null,
+        onClick: () => submitAnswer()
+      }, '确认提交');
+      actions.append(confirmBtn);
+    } else {
+      // Single choice: auto-submit on click, handled in onOptionClick
+    }
+  } else {
+    const nextLabel = idx < questions.length - 1 ? '下一题 →' : (isTest ? '查看结果' : '完成 ✅');
+    const nextBtn = h('button', { className: 'btn btn-primary', onClick: () => nextQuestion() }, nextLabel);
+    actions.append(nextBtn);
+  }
+
+  main.append(progressBar, progressText, timerEl, tag, qNum, qText, optionsDiv, multiHint, actions);
+  app.append(main);
+
+  // Start timer update for test mode
+  if (isTest && state.testStartTime && !state.testResults) {
+    startTimerUpdate();
+  }
+}
+
+let timerInterval = null;
+function startTimerUpdate() {
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    const el = document.getElementById('test-timer');
+    if (!el) { clearInterval(timerInterval); return; }
+    const elapsed = Math.floor((Date.now() - state.testStartTime) / 1000);
+    const mins = Math.floor(elapsed / 60);
+    const secs = elapsed % 60;
+    el.textContent = `⏱ ${mins}:${secs.toString().padStart(2,'0')}`;
+  }, 1000);
+}
+
+function onOptionClick(key, isMulti) {
+  if (state.answered) return;
+
+  if (isMulti) {
+    const idx = state.selectedOpts.indexOf(key);
+    if (idx >= 0) state.selectedOpts.splice(idx, 1);
+    else state.selectedOpts.push(key);
+    render();
+  } else {
+    // Single choice: select and auto-submit
+    state.selectedOpts = [key];
+    submitAnswer();
+  }
+}
+
+function submitAnswer() {
+  if (state.selectedOpts.length === 0) return;
+  const q = state.questions[state.currentIndex];
+  const correctAnswers = q.answer.split('');
+  const selected = state.selectedOpts.sort().join('');
+  const correct = correctAnswers.sort().join('');
+
+  state.isCorrect = selected === correct;
+  state.answered = true;
+
+  // Update history
+  const history = getHistory();
+  const key = qKey(q);
+  const prev = history[key] || { attempts: 0 };
+  history[key] = {
+    correct: state.isCorrect,
+    attempts: prev.attempts + 1,
+    lastAnswered: getTodayStr()
+  };
+  saveHistory(history);
+
+  // Update wrong queue
+  updateWrongQueue(q, state.isCorrect);
+
+  // Update daily progress
+  if (state.view === 'daily') {
+    const daily = getDaily();
+    if (!daily.answeredIds.includes(key)) {
+      daily.answeredIds.push(key);
+      daily.completed += 1;
+      if (state.isCorrect) daily.correct += 1;
+      saveDaily(daily);
+    }
+  }
+
+  render();
+}
+
+function nextQuestion() {
+  const nextIdx = state.currentIndex + 1;
+
+  if (nextIdx >= state.questions.length) {
+    if (state.view === 'test') {
+      finishTest();
+    } else {
+      // Daily or review complete
+      state.currentIndex = nextIdx;
+    }
+    render();
+    return;
+  }
+
+  state.currentIndex = nextIdx;
+  state.selectedOpts = [];
+  state.answered = false;
+  state.isCorrect = false;
+  render();
+}
+
+function renderQuizComplete(main, isTest) {
+  if (state.view === 'test') {
+    renderTestResults(main);
+    return;
+  }
+
+  const daily = state.view === 'daily' ? getDaily() : null;
+  const correctCount = daily ? daily.correct : 0;
+  const total = state.questions.length;
+  const pct = total > 0 ? Math.round(correctCount / total * 100) : 0;
+
+  const celebration = h('div', { className: 'result' },
+    h('div', { className: 'emoji', style: 'font-size:64px' }, pct >= 80 ? '🎉' : pct >= 60 ? '👍' : '💪'),
+    h('div', { className: 'score', className: pct >= 90 ? 'score perfect' : 'score' }, `${pct}%`),
+    h('div', { style: 'color:var(--text2);margin-top:4px' }, `正确 ${correctCount}/${total}`),
+    h('div', { className: 'stat-row' },
+      h('div', { className: 'stat-item' },
+        h('div', { className: 'stat-val' }, `${getReviewCount()}`),
+        h('div', { className: 'stat-label' }, '待复习错题')
+      )
+    )
+  );
+
+  const actions = h('div', { className: 'bottom-actions' },
+    h('button', { className: 'btn btn-primary', onClick: () => setView('menu') }, '返回主页'),
+    h('button', { className: 'btn btn-outline', onClick: () => setView('stats') }, '查看统计')
+  );
+
+  main.append(celebration, actions);
+}
+
+// ====== TEST MODE ======
+function renderTestConfig(app) {
+  const main = h('main');
+  const config = { count: 20, types: [...state.settings.questionTypes] };
+
+  const title = h('h3', { style: 'text-align:center;margin-bottom:20px' }, '🎲 随机测试配置');
+
+  const countSlider = h('div', { className: 'test-config' },
+    h('div', { className: 'count-num', id: 'test-count' }, `${config.count}`),
+    h('div', { style: 'color:var(--text2)' }, '题目数量'),
+    h('input', { type: 'range', min: '5', max: '100', value: config.count, className: 'count-slider',
+      onInput: (e) => { document.getElementById('test-count').textContent = e.target.value; config.count = parseInt(e.target.value); }
+    })
+  );
+
+  const typeChecks = h('div', { className: 'type-checks' },
+    h('label', { className: 'type-check' },
+      h('input', { type: 'checkbox', id: 'cfg-single', checked: config.types.includes('single'),
+        onChange: (e) => { if (e.target.checked) { if(!config.types.includes('single'))config.types.push('single'); } else { const i=config.types.indexOf('single'); if(i>=0)config.types.splice(i,1); } }
+      }), ' 单选题'
+    ),
+    h('label', { className: 'type-check' },
+      h('input', { type: 'checkbox', id: 'cfg-multi', checked: config.types.includes('multiple'),
+        onChange: (e) => { if (e.target.checked) { if(!config.types.includes('multiple'))config.types.push('multiple'); } else { const i=config.types.indexOf('multiple'); if(i>=0)config.types.splice(i,1); } }
+      }), ' 多选题'
+    )
+  );
+
+  const startBtn = h('button', { className: 'btn btn-primary', style: 'width:100%;justify-content:center;margin-top:20px',
+    onClick: () => {
+      if (config.types.length === 0) { toast('请至少选择一种题型'); return; }
+      startTest(config.count, config.types);
+    }
+  }, '开始测试');
+
+  main.append(title, countSlider, typeChecks, startBtn);
+  app.append(main);
+}
+
+function startTest(count, types) {
+  const allQs = getAllQuestions(types || state.settings.questionTypes);
+  if (allQs.length === 0) { toast('没有可用题目，请先选择题型范围'); return; }
+  const selected = shuffle(allQs).slice(0, Math.min(count, allQs.length));
+  if (selected.length === 0) { toast('没有可用题目'); return; }
+
+  state.view = 'test';
+  state.questions = selected;
+  state.currentIndex = 0;
+  state.selectedOpts = [];
+  state.answered = false;
+  state.isCorrect = false;
+  state.testStartTime = Date.now();
+  state.testResults = null;
+  render();
+}
+
+function finishTest() {
+  if (timerInterval) clearInterval(timerInterval);
+  const totalTime = Math.floor((Date.now() - state.testStartTime) / 1000);
+  const questions = state.questions;
+  const history = getHistory();
+  let correct = 0;
+  const wrongQs = [];
+
+  questions.forEach(q => {
+    const h = history[qKey(q)];
+    if (h && h.correct) correct++;
+    else if (h) wrongQs.push(q);
+  });
+
+  state.testResults = {
+    total: questions.length,
+    correct,
+    wrong: questions.length - correct,
+    pct: questions.length > 0 ? Math.round(correct / questions.length * 100) : 0,
+    time: totalTime,
+    wrongQs
+  };
+
+  // Add wrong questions to review queue
+  wrongQs.forEach(q => updateWrongQueue(q, false));
+
+  render();
+}
+
+function renderTestResults(main) {
+  const r = state.testResults;
+  const mins = Math.floor(r.time / 60);
+  const secs = r.time % 60;
+
+  const result = h('div', { className: 'result' },
+    h('div', { style: 'font-size:24px;margin-bottom:8px' }, r.pct >= 80 ? '🎉 太棒了！' : r.pct >= 60 ? '👍 不错的成绩' : '💪 继续加油'),
+    h('div', { className: `score ${r.pct >= 90 ? 'perfect' : ''}` }, `${r.pct}%`),
+    h('div', { style: 'color:var(--text2)' }, `正确率`),
+    h('div', { className: 'stat-row' },
+      h('div', { className: 'stat-item' },
+        h('div', { className: 'stat-val' }, `${r.correct}`),
+        h('div', { className: 'stat-label' }, '正确')
+      ),
+      h('div', { className: 'stat-item' },
+        h('div', { className: 'stat-val' }, `${r.wrong}`),
+        h('div', { className: 'stat-label' }, '错误')
+      ),
+      h('div', { className: 'stat-item' },
+        h('div', { className: 'stat-val' }, `${mins}:${secs.toString().padStart(2,'0')}`),
+        h('div', { className: 'stat-label' }, '用时')
+      )
+    )
+  );
+
+  const actions = h('div', { className: 'bottom-actions', style: 'flex-direction:column;align-items:center;gap:8px' },
+    h('button', { className: 'btn btn-primary', onClick: () => setView('menu') }, '返回主页'),
+    h('button', { className: 'btn btn-outline', onClick: () => {
+      const cnt = r.total;
+      startTest(cnt);
+    } }, '再来一次'),
+    r.wrong > 0 ? h('button', { className: 'btn btn-secondary', onClick: () => startReview() }, `复习 ${r.wrong} 道错题`) : null
+  );
+
+  main.append(result, actions);
+}
+
+// ====== DAILY & REVIEW STARTERS ======
+function startDaily() {
+  const settings = state.settings;
+  const daily = getDaily();
+  const remaining = Math.max(0, settings.dailyGoal - daily.completed);
+
+  if (remaining <= 0) {
+    toast('今日目标已完成！🎉');
+    return;
+  }
+
+  const selected = selectDailyQuestions(remaining, settings.questionTypes);
+  if (selected.length === 0) {
+    toast('没有更多题目可做，请调整题型设置');
+    return;
+  }
+
+  state.view = 'daily';
+  state.questions = selected;
+  state.currentIndex = 0;
+  state.selectedOpts = [];
+  state.answered = false;
+  state.isCorrect = false;
+  render();
+}
+
+function startReview() {
+  const due = getDueReviews();
+  if (due.length === 0) {
+    toast('暂无待复习错题！🎉');
+    return;
+  }
+
+  const allQs = getAllQuestions(state.settings.questionTypes);
+  const qMap = {};
+  allQs.forEach(q => { qMap[qKey(q)] = q; });
+
+  const questions = due.map(k => qMap[k]).filter(Boolean);
+  if (questions.length === 0) {
+    toast('错题对应的题型已禁用，请调整设置');
+    return;
+  }
+
+  state.view = 'review';
+  state.questions = questions;
+  state.currentIndex = 0;
+  state.selectedOpts = [];
+  state.answered = false;
+  state.isCorrect = false;
+  render();
+}
+
+// ====== STATS ======
+function renderStats(app) {
+  const main = h('main');
+  const history = getHistory();
+  const wq = getWrongQueue();
+  const settings = state.settings;
+  const daily = getDaily();
+
+  const totalAnswered = Object.keys(history).length;
+  const totalCorrect = Object.values(history).filter(h => h.correct).length;
+  const totalPct = totalAnswered > 0 ? Math.round(totalCorrect / totalAnswered * 100) : 0;
+  const reviewCount = getReviewCount();
+  const masteredCount = Object.keys(wq.items).length - reviewCount;
+
+  const grid = h('div', { className: 'stats-grid' },
+    h('div', { className: 'stat-card' },
+      h('div', { className: 'sv' }, `${totalAnswered}`),
+      h('div', { className: 'sl' }, '总答题数')
+    ),
+    h('div', { className: 'stat-card' },
+      h('div', { className: 'sv' }, `${totalPct}%`),
+      h('div', { className: 'sl' }, '总正确率')
+    ),
+    h('div', { className: 'stat-card' },
+      h('div', { className: 'sv' }, `${daily.completed}`),
+      h('div', { className: 'sl' }, `今日完成`)
+    ),
+    h('div', { className: 'stat-card' },
+      h('div', { className: 'sv' }, `${reviewCount + masteredCount}`),
+      h('div', { className: 'sl' }, `错题队列 (${reviewCount}待复习)`)
+    )
+  );
+
+  // 7-day chart (simple)
+  const chartTitle = h('h3', { style: 'text-align:center;margin:20px 0 12px' }, '📈 最近7天学习');
+  const chartDiv = h('div', { className: 'chart' });
+  for (let i = 6; i >= 0; i--) {
+    const d = addDays(getTodayStr(), -i);
+    const dayLabel = d.slice(5); // MM-DD
+    const dh = LS.get('phd', { date: '', completed: 0 });
+    // For past days, we don't have data stored, so show 0
+    // In real use, we'd store daily history
+    const dayCount = 0; // Simplified - only today stored
+    const maxH = 100;
+    const h2 = dayCount > 0 ? Math.max(4, dayCount / (settings.dailyGoal || 20) * maxH) : 2;
+    const bar = h('div', { className: 'chart-bar', style: `height:${h2}px` },
+      d === getTodayStr() ? h('div', { className: 'cval' }, `${daily.completed}`) : null,
+      h('div', { className: 'clabel' }, dayLabel)
+    );
+    chartDiv.append(bar);
+  }
+
+  const actions = h('div', { className: 'bottom-actions' },
+    h('button', { className: 'btn btn-outline btn-small', onClick: () => exportData() }, '导出数据'),
+    h('button', { className: 'btn btn-secondary btn-small', onClick: () => resetConfirm() }, '重置进度')
+  );
+
+  main.append(grid, chartTitle, chartDiv, actions);
+  app.append(main);
+}
+
+// ====== SETTINGS ======
+function showSettings() {
+  // Make a copy so changes only apply on save
+  const origSettings = state.settings;
+  const localSettings = JSON.parse(JSON.stringify(origSettings));
+  const overlay = h('div', { className: 'modal-overlay', onClick: (e) => { if (e.target === overlay) overlay.remove(); } });
+
+  const modal = h('div', { className: 'modal' },
+    h('div', { className: 'close', onClick: () => overlay.remove() }),
+    h('h3', null, '⚙️ 设置'),
+
+    h('div', { className: 'setting-row' },
+      h('span', { className: 'slabel' }, '每日题数'),
+      h('input', { type: 'range', min: '5', max: '100', value: localSettings.dailyGoal,
+        onInput: (e) => {
+          localSettings.dailyGoal = parseInt(e.target.value);
+          e.target.nextSibling.textContent = localSettings.dailyGoal;
+        }
+      }),
+      h('span', { className: 'sval', id: 'daily-goal-val' }, `${localSettings.dailyGoal}`)
+    ),
+
+    h('div', { className: 'setting-row' },
+      h('span', { className: 'slabel' }, '题型范围'),
+      h('div', { style: 'display:flex;gap:12px' },
+        h('label', { className: 'type-check' },
+          h('input', { type: 'checkbox', checked: localSettings.questionTypes.includes('single'),
+            onChange: (e) => {
+              if (e.target.checked) { if(!localSettings.questionTypes.includes('single')) localSettings.questionTypes.push('single'); }
+              else { const i=localSettings.questionTypes.indexOf('single'); if(i>=0)localSettings.questionTypes.splice(i,1); }
+            }
+          }), ' 单选'
+        ),
+        h('label', { className: 'type-check' },
+          h('input', { type: 'checkbox', checked: localSettings.questionTypes.includes('multiple'),
+            onChange: (e) => {
+              if (e.target.checked) { if(!localSettings.questionTypes.includes('multiple')) localSettings.questionTypes.push('multiple'); }
+              else { const i=localSettings.questionTypes.indexOf('multiple'); if(i>=0)localSettings.questionTypes.splice(i,1); }
+            }
+          }), ' 多选'
+        )
+      )
+    ),
+
+    h('div', { className: 'setting-row' },
+      h('span', { className: 'slabel' }, '深色模式'),
+      h('div', { className: `toggle ${localSettings.theme === 'dark' ? 'on' : ''}`,
+        onClick: (e) => {
+          localSettings.theme = localSettings.theme === 'dark' ? 'light' : 'dark';
+          e.target.classList.toggle('on');
+        }
+      })
+    ),
+
+    h('div', { className: 'setting-row' },
+      h('span', { className: 'slabel' }, '关于'),
+      h('span', { className: 'sval' }, `题库: ${QUESTION_BANK.singleChoice.length}单选 + ${QUESTION_BANK.multipleChoice.length}多选`)
+    ),
+
+    h('div', { style: 'display:flex;gap:12px;margin-top:20px;justify-content:center' },
+      h('button', { className: 'btn btn-outline', onClick: () => { exportData(); } }, '导出数据'),
+      h('button', { className: 'btn btn-secondary', onClick: () => { overlay.remove(); resetConfirm(); } }, '重置进度')
+    ),
+
+    h('div', { style: 'text-align:center;margin-top:16px' },
+      h('button', { className: 'btn btn-primary', style: 'width:100%;justify-content:center',
+        onClick: () => {
+          saveSettings(localSettings);
+          state.settings = localSettings;
+          overlay.remove();
+          toast('设置已保存');
+          render();
+        }
+      }, '保存设置')
+    )
+  );
+
+  overlay.append(modal);
+  document.body.append(overlay);
+}
+
+function applyTheme() {
+  const theme = (state.settings && state.settings.theme) || 'light';
+  document.documentElement.setAttribute('data-theme', theme);
+}
+
+function resetConfirm() {
+  const overlay = h('div', { className: 'modal-overlay', onClick: (e) => { if (e.target === overlay) overlay.remove(); } });
+  const modal = h('div', { className: 'modal' },
+    h('div', { className: 'close', onClick: () => overlay.remove() }),
+    h('h3', null, '⚠️ 确认重置'),
+    h('p', { style: 'text-align:center;color:var(--text2)' }, '将清除所有学习记录、错题队列和进度数据。此操作不可撤销。'),
+    h('div', { style: 'display:flex;gap:12px;margin-top:20px;justify-content:center' },
+      h('button', { className: 'btn btn-secondary', onClick: () => overlay.remove() }, '取消'),
+      h('button', { className: 'btn btn-primary', style: 'background:var(--red)',
+        onClick: () => {
+          localStorage.removeItem('phs');
+          localStorage.removeItem('phd');
+          localStorage.removeItem('phh');
+          localStorage.removeItem('phwq');
+          state.settings = getSettings();
+          state.daily = getDaily();
+          overlay.remove();
+          toast('已重置所有数据');
+          render();
+        }
+      }, '确认重置')
+    )
+  );
+  overlay.append(modal);
+  document.body.append(overlay);
+}
+
+function exportData() {
+  const data = {
+    settings: getSettings(),
+    daily: getDaily(),
+    history: getHistory(),
+    wrongQueue: getWrongQueue(),
+    exportedAt: new Date().toISOString()
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `党史学习备份-${getTodayStr()}.json`;
+  a.click();
+  toast('数据已导出');
+}
+
+// ====== TOAST ======
+function toast(msg) {
+  const el = h('div', { className: 'toast' }, msg);
+  document.body.append(el);
+  setTimeout(() => el.remove(), 2000);
+}
+
+// ====== SERVICE WORKER ======
+function registerSW() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').then(reg => {
+      console.log('SW registered:', reg.scope);
+    }).catch(err => {
+      console.log('SW registration skipped:', err.message);
+    });
+  }
+}
+
+// ====== PWA MANIFEST ======
+function setupManifest() {
+  const manifest = {
+    name: '党史知识竞赛学习',
+    short_name: '党史学习',
+    description: '党史知识竞赛题库学习应用',
+    start_url: '.',
+    display: 'standalone',
+    background_color: '#f5f0eb',
+    theme_color: '#c41e3a',
+    orientation: 'portrait',
+    icons: [{
+      src: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192"><rect width="192" height="192" rx="32" fill="#c41e3a"/><text x="96" y="120" font-size="80" text-anchor="middle" fill="white">🏛️</text></svg>'),
+      sizes: '192x192', type: 'image/svg+xml', purpose: 'any maskable'
+    }]
+  };
+
+  const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+  const link = document.createElement('link');
+  link.rel = 'manifest';
+  link.href = URL.createObjectURL(blob);
+  document.head.append(link);
+}
+
+// ====== INSTALL PROMPT ======
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const banner = document.createElement('div');
+  banner.className = 'install-banner show';
+  banner.innerHTML = '<span>📲 添加到主屏幕，随时学习</span><button id="install-btn">安装</button>';
+  document.getElementById('app').prepend(banner);
+  document.getElementById('install-btn').addEventListener('click', async () => {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') banner.remove();
+    deferredPrompt = null;
+  });
+});
+
+// ====== INIT ======
+async function init() {
+  state.settings = getSettings();
+  state.daily = getDaily();
+  applyTheme();
+  setupManifest();
+  registerSW();
+  await loadQuestions();
+  render();
+}
+
+init();
+</script>
+</body>
+</html>
