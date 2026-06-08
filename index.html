@@ -407,6 +407,8 @@ function h(tag, attrs, ...children) {
   if (attrs) Object.entries(attrs).forEach(([k,v]) => {
     if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2).toLowerCase(), v);
     else if (k === 'className') el.className = v;
+    else if (k === 'disabled' || k === 'checked') el[k] = !!v;
+    else if (k === 'style') Object.assign(el.style, v);
     else el.setAttribute(k, v);
   });
   children.forEach(c => { if (c != null) el.append(typeof c === 'string' ? document.createTextNode(c) : c); });
@@ -741,9 +743,24 @@ function renderQuizComplete(main, isTest) {
     )
   );
 
-  const actions = h('div', { className: 'bottom-actions' },
+  const actions = h('div', { className: 'bottom-actions', style: 'flex-wrap:wrap' },
     h('button', { className: 'btn btn-primary', onClick: () => setView('menu') }, '返回主页'),
-    h('button', { className: 'btn btn-outline', onClick: () => setView('stats') }, '查看统计')
+    h('button', { className: 'btn btn-outline', onClick: () => {
+      // Continue learning beyond daily goal
+      const moreQs = selectDailyQuestions(20, state.settings.questionTypes);
+      if (moreQs.length === 0) {
+        toast('所有题目都已答过，请调整题型设置');
+        return;
+      }
+      state.view = 'daily';
+      state.questions = moreQs;
+      state.currentIndex = 0;
+      state.selectedOpts = [];
+      state.answered = false;
+      state.isCorrect = false;
+      render();
+    } }, '➕ 再加20题'),
+    h('button', { className: 'btn btn-secondary', onClick: () => setView('stats') }, '查看统计')
   );
 
   main.append(celebration, actions);
@@ -878,7 +895,20 @@ function startDaily() {
   const remaining = Math.max(0, settings.dailyGoal - daily.completed);
 
   if (remaining <= 0) {
-    toast('今日目标已完成！🎉');
+    // Goal met — ask if user wants to continue
+    toast('今日目标已完成！🎉 可再加题继续学习');
+    const extraQs = selectDailyQuestions(20, settings.questionTypes);
+    if (extraQs.length === 0) {
+      toast('没有更多题目可做');
+      return;
+    }
+    state.view = 'daily';
+    state.questions = extraQs;
+    state.currentIndex = 0;
+    state.selectedOpts = [];
+    state.answered = false;
+    state.isCorrect = false;
+    render();
     return;
   }
 
