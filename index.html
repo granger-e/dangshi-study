@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#c41e3a">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="党史学习">
 <title>党史知识竞赛学习</title>
@@ -408,7 +409,7 @@ function h(tag, attrs, ...children) {
     if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2).toLowerCase(), v);
     else if (k === 'className') el.className = v;
     else if (k === 'disabled' || k === 'checked') el[k] = !!v;
-    else if (k === 'style') Object.assign(el.style, v);
+    else if (k === 'style') { if (typeof v === 'string') el.style.cssText = v; else Object.assign(el.style, v); }
     else el.setAttribute(k, v);
   });
   children.forEach(c => { if (c != null) el.append(typeof c === 'string' ? document.createTextNode(c) : c); });
@@ -1167,7 +1168,7 @@ function setupManifest() {
     name: '党史知识竞赛学习',
     short_name: '党史学习',
     description: '党史知识竞赛题库学习应用',
-    start_url: '.',
+    start_url: './',
     display: 'standalone',
     background_color: '#f5f0eb',
     theme_color: '#c41e3a',
