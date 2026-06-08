@@ -1174,13 +1174,25 @@ window.addEventListener('beforeinstallprompt', (e) => {
 
 // ====== INIT ======
 async function init() {
-  state.settings = getSettings();
-  state.daily = getDaily();
-  applyTheme();
-  setupManifest();
-  registerSW();
-  await loadQuestions();
-  render();
+  try {
+    state.settings = getSettings();
+    state.daily = getDaily();
+    applyTheme();
+    setupManifest();
+    registerSW();
+    await loadQuestions();
+    console.log('Questions loaded:', QUESTION_BANK.singleChoice.length, 'single +', QUESTION_BANK.multipleChoice.length, 'multi');
+    render();
+    console.log('App rendered successfully');
+  } catch (e) {
+    console.error('Init error:', e);
+    document.getElementById('app').innerHTML =
+      '<div style="text-align:center;padding:60px 20px;font-family:sans-serif">' +
+      '<h2>⚠️ 加载失败</h2>' +
+      '<p style="color:#666">错误: ' + e.message + '</p>' +
+      '<p style="color:#999;font-size:13px">请确保通过HTTP服务器访问（python3 -m http.server 8080），<br>不要直接用 file:// 打开</p>' +
+      '</div>';
+  }
 }
 
 init();
