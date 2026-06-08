@@ -405,7 +405,7 @@ const $$ = (sel) => document.querySelectorAll(sel);
 function h(tag, attrs, ...children) {
   const el = document.createElement(tag);
   if (attrs) Object.entries(attrs).forEach(([k,v]) => {
-    if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2), v);
+    if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2).toLowerCase(), v);
     else if (k === 'className') el.className = v;
     else el.setAttribute(k, v);
   });
