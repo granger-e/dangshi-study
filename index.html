@@ -289,8 +289,8 @@ function updateWrongQueue(q, isCorrect) {
   const today = getTodayStr();
 
   if (!isCorrect) {
-    // Wrong answer: reset interval
-    wq.items[key] = { added: today, interval: 1, consecutiveCorrect: 0, nextReview: addDays(today, 1) };
+    // Wrong answer: add to queue, reviewable immediately
+    wq.items[key] = { added: today, interval: 1, consecutiveCorrect: 0, nextReview: today };
   } else {
     const item = wq.items[key];
     if (item) {
@@ -418,16 +418,19 @@ function h(tag, attrs, ...children) {
 
 function render() {
   const app = document.getElementById('app');
-  app.innerHTML = '';
-  app.append(renderNav());
+  // Use requestAnimationFrame to batch DOM updates and reduce flicker
+  requestAnimationFrame(() => {
+    app.innerHTML = '';
+    app.append(renderNav());
 
-  if (state.view === 'menu') renderMenu(app);
-  else if (state.view === 'daily' || state.view === 'review') renderQuiz(app);
-  else if (state.view === 'test') renderQuiz(app, true);
-  else if (state.view === 'testConfig') renderTestConfig(app);
-  else if (state.view === 'stats') renderStats(app);
+    if (state.view === 'menu') renderMenu(app);
+    else if (state.view === 'daily' || state.view === 'review') renderQuiz(app);
+    else if (state.view === 'test') renderQuiz(app, true);
+    else if (state.view === 'testConfig') renderTestConfig(app);
+    else if (state.view === 'stats') renderStats(app);
 
-  applyTheme();
+    applyTheme();
+  });
 }
 
 function renderNav() {
@@ -530,12 +533,6 @@ function renderQuiz(app, isTest = false) {
   );
 
   let progressLabel = `${done}/${total}`;
-  if (isTest && state.testStartTime) {
-    const elapsed = Math.floor((Date.now() - state.testStartTime) / 1000);
-    const mins = Math.floor(elapsed / 60);
-    const secs = elapsed % 60;
-    progressLabel += ` · ⏱ ${mins}:${secs.toString().padStart(2,'0')}`;
-  }
 
   const progressText = h('div', { className: 'progress-text' }, progressLabel);
 
@@ -706,6 +703,7 @@ function nextQuestion() {
   if (nextIdx >= state.questions.length) {
     if (state.view === 'test') {
       finishTest();
+      state.currentIndex = state.questions.length; // trigger results view
     } else {
       // Daily or review complete
       state.currentIndex = nextIdx;
